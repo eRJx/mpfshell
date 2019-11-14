@@ -57,8 +57,9 @@ class Pyboard:
         return data
 
     def enter_raw_repl(self):
-
-        time.sleep(0.5)   # allow some time for board to reset
+        print('wait 2.0s')
+        time.sleep(2.0)   # allow some time for board to reset
+        print('send ctrl-C twice')
         self.con.write(b"\r\x03\x03")  # ctrl-C twice: interrupt any running program
 
         # flush input (without relying on serial.flushInput())
@@ -73,12 +74,14 @@ class Pyboard:
             data = self.read_until(1, b"raw REPL; CTRL-B to exit\r\n>")
 
             if not data.endswith(b"raw REPL; CTRL-B to exit\r\n>"):
+                print('tu1')
                 print(data)
                 raise PyboardError("could not enter raw repl")
 
             self.con.write(b"\x04")  # ctrl-D: soft reset
             data = self.read_until(1, b"soft reboot\r\n")
             if not data.endswith(b"soft reboot\r\n"):
+                print('tu2')
                 print(data)
                 raise PyboardError("could not enter raw repl")
 
@@ -86,6 +89,7 @@ class Pyboard:
             # which will show up after the soft reboot and before the raw REPL.
             data = self.read_until(1, b"raw REPL; CTRL-B to exit\r\n")
             if not data.endswith(b"raw REPL; CTRL-B to exit\r\n"):
+                print('tu3')
                 print(data)
                 raise PyboardError("could not enter raw repl")
 
@@ -95,6 +99,7 @@ class Pyboard:
             data = self.read_until(1, b"raw REPL; CTRL-B to exit\r\n")
 
             if not data.endswith(b"raw REPL; CTRL-B to exit\r\n"):
+                print('tu4')
                 print(data)
                 raise PyboardError("could not enter raw repl")
 
@@ -128,6 +133,7 @@ class Pyboard:
         # check we have a prompt
         data = self.read_until(1, b">")
         if not data.endswith(b">"):
+            print('tu5')
             raise PyboardError("could not enter raw repl")
 
         # write command
